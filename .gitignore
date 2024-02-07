@@ -1,0 +1,5 @@
+.nextflow*
+**/*.pdf
+work
+results
+*.swp

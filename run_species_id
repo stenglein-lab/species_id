@@ -1,0 +1,3 @@
+#!/bin/bash 
+
+nextflow run main.nf  -profile local,singularity --fastq_dir ../../read_preprocessing/trimmed_fastq/ --fastq_pattern "*_[12].fastq.gz" -resume  
