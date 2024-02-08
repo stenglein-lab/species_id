@@ -9,7 +9,8 @@ include { PROCESS_SPECIES_OUTPUT                     } from '../../modules/steng
 
 workflow SPECIES_ID {                                                    
 
-  MARSHALL_FASTQ(params.fastq_dir, params.fastq_pattern)
+  def count_fastq = false
+  MARSHALL_FASTQ(params.fastq_dir, params.fastq_pattern, count_fastq)
 
   BUILD_GENOME_INDEX(params.species_id_fasta)
 

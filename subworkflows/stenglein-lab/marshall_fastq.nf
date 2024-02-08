@@ -17,8 +17,9 @@ include { COUNT_FASTQ              } from '../../modules/stenglein-lab/count_fas
 workflow MARSHALL_FASTQ {
 
  take:
- input_fastq_dir        // the path to a directory containing fastq file(s) or a comma-separated list of dirs
- fastq_pattern          // the regex that will be matched to identify fastq
+   input_fastq_dir        // the path to a directory containing fastq file(s) or a comma-separated list of dirs
+   fastq_pattern          // the regex that will be matched to identify fastq
+   count_fastq            // boolean: should we count # of reads in input fastq?
 
  main:
 
@@ -82,8 +83,10 @@ workflow MARSHALL_FASTQ {
   CHECK_FASTQ_COMPRESSED ( ch_reads ) 
 
   // count # of reads in each fastq file (or file pair)
-  COUNT_FASTQ ( ch_reads.map{ meta, reads -> [ meta, reads, "post_trimming"] } )
-  ch_fastq_counts = ch_fastq_counts.mix(COUNT_FASTQ.out.count_file)
+  if (count_fastq) {
+    COUNT_FASTQ ( ch_reads.map{ meta, reads -> [ meta, reads, "post_trimming"] } )
+    ch_fastq_counts = ch_fastq_counts.mix(COUNT_FASTQ.out.count_file)
+  }
   
  emit: 
   reads           = ch_reads
