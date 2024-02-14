@@ -21,11 +21,13 @@ if (!interactive()) {
 }
 
 #
-# assign Drosophila species based on counts of CO1-mapping reads
-# from a competitive mapping analysis using all available
+# assign species using counts of reads
+# from a competitive mapping analysis 
+#
+# for instance, by mapping reads to all available
 # Drosophila CO1 (cytochrome oxidase 1) sequencs
 #
-# MDS 5/6/2020
+# MDS 2/14/2024
 #
 
 # read in the data
@@ -34,17 +36,24 @@ df <- read.delim(tsv_input, sep="\t", header=F)
 # name columns
 colnames(df) <- c("dataset", "species", "count", "pct_id")
 
-# calculate CO1-mapping count totals for each dataset
-# then determine the fractional counts for CO1-mapping reads
-# then only keep any counts that represent >1% of the datasets
+# calculate mapping count totals for each dataset
+# then determine fractional counts 
 df <- df %>% 
   group_by(dataset) %>% 
   mutate(total_count = sum(count), 
             fractional_count = count / total_count) %>% 
-  mutate(accession_species = species,  species = str_match(species, "_([A-Z].*)")[,2])
+  mutate(accession_species = species,  species = str_match(species, "_([A-Z].*)")[,2]) %>%
+  arrange(dataset, -fractional_count)
 
-print(df, n=50)
-df %>% group_by(dataset) %>% arrange(-count)
+# output observed spp - all hits
+write.table(df, 
+            file=paste0(output_dir, "co1_observed_species.all_hits.txt"), 
+            quote=F, sep="\t", row.names=F)
+
+# output observed spp - all hits
+write.table(filter(df, fractional_count > 0.01),, 
+            file=paste0(output_dir, "co1_observed_species.gt_1_pct_hits.txt"), 
+            quote=F, sep="\t", row.names=F)
 
 # top hits for each datset
 top_hits <- 
@@ -60,13 +69,11 @@ observed_species <- top_hits %>%
   summarize(n=n()) %>%
   arrange(-n)
 
-# output observed spp
+# output observed spp - only top hits from each dataset
 write.table(observed_species, 
-            file=paste0(output_dir, "co1_observed_species.txt"), 
+            file=paste0(output_dir, "co1_observed_species.top_hits.txt"), 
             quote=F, sep="\t", row.names=F)
 
-# what about Lexi's flies from FoCo20/21
-Lexi_FoCos <- df %>% filter(str_detect(dataset, "^FoCo2"))
 
 # actually make assignments based on highest fractional count
 df_assigned <- df %>% 
