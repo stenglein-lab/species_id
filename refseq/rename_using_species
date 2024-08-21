@@ -1,0 +1,42 @@
+#!/usr/bin/env perl
+
+use strict;
+use Getopt::Long;
+
+my $print_usage = 0;
+
+my $usage = <<USAGE;
+
+  This script renames fasta sequence names using the 
+  species name, which is presumed to be the first 2 
+  words after the first whitespace.
+
+  Mark Stenglein,  8/13/2024
+
+  Usage: $0 [-h] 
+
+   [-h]          print this message
+
+USAGE
+
+if ((scalar @ARGV == 0) and -t STDIN) { print $usage and exit; }
+
+GetOptions ("h" => \$print_usage);
+
+while (<>)
+{
+   chomp;
+
+   # header line
+   if (/^>/){
+     if (/^>(\S+)( PREDICTED:){0,1}( TPA_exp:){0,1} ([A-Za-z]+) ([A-Za-z]+)/)
+     {
+        print ">$1_$4_$5\n";
+     } else {
+        die ("parse error: $_\n");
+     }
+   } else {
+     # print out sequence (non-header) lines
+     print "$_\n";
+   }
+}

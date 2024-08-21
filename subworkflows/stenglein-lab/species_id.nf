@@ -22,6 +22,8 @@ workflow SPECIES_ID {
 
   TABULATE_MAPPING_STATS(EXTRACT_SAM_INFO.out.txt.collectFile(name: "all_sam_stats.txt"){it[1]})
 
-  PROCESS_SPECIES_OUTPUT(TABULATE_MAPPING_STATS.out.txt)
+  metadata_rds_ch = Channel.fromPath(params.metadata_rds)
+
+  PROCESS_SPECIES_OUTPUT(TABULATE_MAPPING_STATS.out.txt, metadata_rds_ch)
 }
 

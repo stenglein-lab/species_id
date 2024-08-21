@@ -8,6 +8,7 @@ process PROCESS_SPECIES_OUTPUT {
 
   input:
   path (txt)
+  path (metadata)
 
   output:
   path "*.txt"         , emit: txt, includeInputs: true
@@ -21,7 +22,7 @@ process PROCESS_SPECIES_OUTPUT {
   def args             = task.ext.args ?: ''
 
   """
-   Rscript ${params.bin_dir}/assign_species_by_co1.R $txt 
+   Rscript ${params.bin_dir}/assign_species_by_co1.R $txt $metadata
   """
 
 }
