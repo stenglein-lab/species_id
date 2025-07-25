@@ -2,7 +2,7 @@ This directory contains a file, co1.fasta, that contains a set of 546 cytochrome
 
 The fasta header lines have been reformated to be of the form:
 
->Genes_species__accession:range_min-range_max
+>Accession:range_min-range_max_Genus_species
 
 These sequences were collected on 8/13/2024 by:
 
