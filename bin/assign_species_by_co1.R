@@ -38,8 +38,18 @@ df <- read.delim(tsv_input, sep="\t", header=F)
 # name columns
 colnames(df) <- c("dataset", "co1_species", "count", "pct_id")
 
+# check to see if optional metadata file exists.  If not, don't use it.
+if (file.exists(metadata_rds)) {
+  use_metadata <- T
+} else {
+  use_metadata <- F
+  warning(paste0("WARNING: metadata file " , metadata_rds, " does not exist.  Metadata will not be used."))
+}
+
 # read in metadata
-metadata <- readRDS(metadata_rds)
+if (use_metadata) {
+  metadata <- readRDS(metadata_rds)
+}
 
 # pull out refseq accession and species names from accession_species sequence IDs
 df <- df %>% 
@@ -68,8 +78,10 @@ df_spp <- df %>%
          .groups="drop") %>%
   arrange(dataset, -fractional_count)
 
-# merge in metadata
-df <- left_join(df, metadata, by=c("dataset" = "sample_id"))
+# merge in metadata, if it exists
+if (use_metadata) {
+  df <- left_join(df, metadata, by=c("dataset" = "sample_id"))
+}
 
 # output observed spp - all hits
 write.table(df, 
