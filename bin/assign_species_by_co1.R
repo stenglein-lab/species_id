@@ -116,7 +116,7 @@ write.table(observed_species,
 # requirements for assignment:
 # - some species accounted for >50% of co1-mapping reads
 df_assigned <- df %>% 
-  group_by(sample_id_in_paper) %>% 
+  group_by(dataset) %>% 
   arrange(-fractional_count) %>% 
   filter(row_number()==1) %>%
   mutate(co1_assigned_species = if_else(fractional_count > 0.50, co1_species, "undetermined"),
