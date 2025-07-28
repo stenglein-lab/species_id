@@ -119,10 +119,9 @@ df_assigned <- df %>%
   group_by(dataset) %>% 
   arrange(-fractional_count) %>% 
   filter(row_number()==1) %>%
-  mutate(co1_assigned_species = if_else(fractional_count > 0.50, co1_species, "undetermined"),
-         museum_species = species) %>%
+  mutate(co1_assigned_species = if_else(fractional_count > 0.50, co1_species, "undetermined")) %>%
   arrange(sample_type, sample_order) %>%
-  select(dataset, sample_id_in_paper, museum_species, co1_assigned_species, count, fractional_count, accession, pct_id)
+  select(dataset, co1_assigned_species, count, fractional_count, accession, pct_id)
 
 # write output to tsv file
 write.table(df_assigned, 
