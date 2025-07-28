@@ -120,7 +120,6 @@ df_assigned <- df %>%
   arrange(-fractional_count) %>% 
   filter(row_number()==1) %>%
   mutate(co1_assigned_species = if_else(fractional_count > 0.50, co1_species, "undetermined")) %>%
-  arrange(sample_type, sample_order) %>%
   select(dataset, co1_assigned_species, count, fractional_count, accession, pct_id)
 
 # write output to tsv file
